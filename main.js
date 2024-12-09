@@ -1,11 +1,12 @@
 // Configuration Phaser
 const config = {
     type: Phaser.AUTO,
+    parent: 'game-container',
     scale: {
-      mode: Phaser.Scale.FIT, // Adapte le jeu à la taille de l'écran
+      mode: Phaser.Scale.RESIZE, // Adapte le jeu dynamiquement
       autoCenter: Phaser.Scale.CENTER_BOTH, // Centre le jeu dans le viewport
-      width: 800, // Largeur virtuelle du jeu
-      height: 600 // Hauteur virtuelle du jeu
+      width: '100%', // Largeur dynamique
+      height: '100%' // Hauteur dynamique
     },
     backgroundColor: '#87CEEB',
     scene: {
@@ -27,14 +28,25 @@ const config = {
   }
   
   function create() {
+    // Réinitialisation des variables
     score = 0;
     timeLeft = 30;
+
+    // Calcul de la taille dynamique pour les éléments
+    const screenWidth = this.scale.width;
+    const screenHeight = this.scale.height;
   
     // Texte du score
-    scoreText = this.add.text(10, 10, `Score: ${score}`, { fontSize: '32px', fill: '#000' });
+    scoreText = this.add.text(10, 10, `Score: ${score}`, { 
+      fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
+      fill: '#000' 
+    });
   
     // Texte du timer
-    timerText = this.add.text(10, 50, `Temps: ${timeLeft}s`, { fontSize: '32px', fill: '#000' });
+    timerText = this.add.text(10, 50, `Temps: ${timeLeft}s`, { 
+      fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
+      fill: '#000' 
+    });
   
     // Générer des bulles régulièrement
     this.time.addEvent({
@@ -45,8 +57,16 @@ const config = {
   
         if (timeLeft <= 0) {
           this.scene.pause();
-          this.add.text(300, 250, 'Partie terminée !', { fontSize: '48px', fill: '#ff0000' });
-          this.add.text(300, 300, 'Cliquez pour rejouer', { fontSize: '24px', fill: '#000' });
+          const endText = this.add.text(screenWidth/2, screenHeight/2, 'Partie terminée !', { 
+            fontSize: `${Math.min(screenWidth, screenHeight) * 0.1}px`, 
+            fill: '#ff0000',
+            origin: 0.5
+          });
+          const replayText = this.add.text(screenWidth/2, screenHeight/2 + 50, 'Cliquez pour rejouer', { 
+            fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
+            fill: '#000',
+            origin: 0.5
+          });
           this.input.once('pointerdown', () => this.scene.restart());
         }
       },
@@ -57,9 +77,10 @@ const config = {
     this.time.addEvent({
       delay: 500,
       callback: () => {
-        const x = Phaser.Math.Between(50, 750); // Position X aléatoire
-        const y = Phaser.Math.Between(50, 550); // Position Y aléatoire
-        const bubble = this.add.image(x, y, 'bubble').setScale(0.1);
+        const x = Phaser.Math.Between(50, screenWidth - 50); // Position X aléatoire
+        const y = Phaser.Math.Between(50, screenHeight - 50); // Position Y aléatoire
+        const bubbleSize = Math.min(screenWidth, screenHeight) * 0.1;
+        const bubble = this.add.image(x, y, 'bubble').setScale(bubbleSize / 512);
   
         // Animation de disparition
         this.tweens.add({
@@ -84,4 +105,3 @@ const config = {
   function update() {
     // Pas d'update spécifique pour ce jeu
   }
-  
