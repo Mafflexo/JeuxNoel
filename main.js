@@ -1,8 +1,12 @@
 // Configuration Phaser
 const config = {
     type: Phaser.AUTO,
-    width: 800,
-    height: 600,
+    scale: {
+      mode: Phaser.Scale.FIT, // Adapte le jeu à la taille de l'écran
+      autoCenter: Phaser.Scale.CENTER_BOTH, // Centre le jeu dans le viewport
+      width: 800, // Largeur virtuelle du jeu
+      height: 600 // Hauteur virtuelle du jeu
+    },
     backgroundColor: '#87CEEB',
     scene: {
       preload: preload,

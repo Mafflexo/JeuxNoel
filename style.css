@@ -1,17 +1,15 @@
 body {
     margin: 0;
     padding: 0;
-    font-family: Arial, sans-serif;
-    overflow: hidden; /* Empêche le défilement */
-    touch-action: manipulation; /* Améliore les interactions tactiles */
-  }
-  
-  #game-container {
-    width: 100vw; /* Occupe toute la largeur de l'écran */
-    height: 100vh; /* Occupe toute la hauteur de l'écran */
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: #87CEEB; /* Couleur de fond */
+    height: 100vh; /* Hauteur totale de l'écran */
+    overflow: hidden; /* Empêche le défilement */
+    background-color: #87CEEB; /* Fond bleu clair */
+  }
+  
+  canvas {
+    display: block;
   }
   
