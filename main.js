@@ -2,20 +2,20 @@
 const config = {
     type: Phaser.AUTO,
     parent: 'game-container',
-    scale: {
-      mode: Phaser.Scale.RESIZE,
-      autoCenter: Phaser.Scale.CENTER_BOTH,
-      width: '100%',
-      height: '100%'
-    },
+    width: 800,
+    height: 600,
     backgroundColor: '#87CEEB',
+    scale: {
+        mode: Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH
+    },
     scene: {
-      preload: preload,
-      create: create,
-      update: update
+        preload: preload,
+        create: create,
+        update: update
     }
-  };
-  
+};
+
 const game = new Phaser.Game(config);
 
 let score = 0;
@@ -24,8 +24,8 @@ let timerText;
 let timeLeft = 30;
 let bubbleTimer;
 let isGameStarted = false;
-let bubbleSpawnDelay = 1500; // Commence plus lentement
-let difficultyIncreaseInterval = 5; // Accélère toutes les 5 secondes
+let bubbleSpawnDelay = 1500;
+let difficultyIncreaseInterval = 5;
 
 function preload() {
     this.load.image('bubble', 'https://cdn-icons-png.flaticon.com/512/102/102344.png');
@@ -33,9 +33,6 @@ function preload() {
 }
 
 function create() {
-    const screenWidth = this.scale.width;
-    const screenHeight = this.scale.height;
-
     // Réinitialisation des variables
     score = 0;
     timeLeft = 30;
@@ -43,24 +40,24 @@ function create() {
     bubbleSpawnDelay = 1500;
 
     // Bouton de démarrage
-    const startButton = this.add.image(screenWidth/2, screenHeight/2, 'startButton')
-        .setScale(0.3)
+    const startButton = this.add.image(400, 300, 'startButton')
+        .setScale(0.5)
         .setInteractive()
         .on('pointerdown', () => {
             startButton.destroy();
             startGame.call(this);
         });
 
-    // Texte du score (en haut à gauche)
+    // Texte du score
     scoreText = this.add.text(10, 10, `Score: ${score}`, { 
-        fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
+        fontSize: '32px', 
         fill: '#000',
         visible: false
     });
 
-    // Texte du timer (en haut à gauche)
+    // Texte du timer
     timerText = this.add.text(10, 50, `Temps: ${timeLeft}s`, { 
-        fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
+        fontSize: '32px', 
         fill: '#000',
         visible: false
     });
@@ -81,7 +78,6 @@ function startGame() {
             // Augmentation de la difficulté
             if (timeLeft % difficultyIncreaseInterval === 0 && timeLeft > 0) {
                 bubbleSpawnDelay = Math.max(300, bubbleSpawnDelay - 200);
-                // Détruire l'ancien timer et en créer un nouveau
                 if (bubbleTimer) bubbleTimer.remove();
                 createBubbleSpawner.call(this);
             }
@@ -98,17 +94,12 @@ function startGame() {
 }
 
 function createBubbleSpawner() {
-    // Créer un nouveau timer pour les bulles avec le délai actuel
     bubbleTimer = this.time.addEvent({
         delay: bubbleSpawnDelay,
         callback: () => {
-            const screenWidth = this.scale.width;
-            const screenHeight = this.scale.height;
-
-            const x = Phaser.Math.Between(50, screenWidth - 50);
-            const y = Phaser.Math.Between(50, screenHeight - 50);
-            const bubbleSize = Math.min(screenWidth, screenHeight) * 0.1;
-            const bubble = this.add.image(x, y, 'bubble').setScale(bubbleSize / 512);
+            const x = Phaser.Math.Between(50, 750);
+            const y = Phaser.Math.Between(50, 550);
+            const bubble = this.add.image(x, y, 'bubble').setScale(0.1);
 
             // Animation de disparition
             this.tweens.add({
@@ -137,26 +128,20 @@ function endGame() {
     // Mettre en pause la scène
     this.scene.pause();
 
-    const screenWidth = this.scale.width;
-    const screenHeight = this.scale.height;
-
     // Texte de fin
-    const endText = this.add.text(screenWidth/2, screenHeight/2, 'Partie terminée !', { 
-        fontSize: `${Math.min(screenWidth, screenHeight) * 0.1}px`, 
-        fill: '#ff0000',
-        origin: 0.5
+    this.add.text(250, 250, 'Partie terminée !', { 
+        fontSize: '48px', 
+        fill: '#ff0000'
     });
 
-    const scoreEndText = this.add.text(screenWidth/2, screenHeight/2 + 100, `Score final : ${score}`, { 
-        fontSize: `${Math.min(screenWidth, screenHeight) * 0.06}px`, 
-        fill: '#000',
-        origin: 0.5
+    const scoreEndText = this.add.text(250, 350, `Score final : ${score}`, { 
+        fontSize: '32px', 
+        fill: '#000'
     });
 
-    const replayText = this.add.text(screenWidth/2, screenHeight/2 + 200, 'Cliquez pour rejouer', { 
-        fontSize: `${Math.min(screenWidth, screenHeight) * 0.05}px`, 
-        fill: '#000',
-        origin: 0.5
+    const replayText = this.add.text(250, 400, 'Cliquez pour rejouer', { 
+        fontSize: '24px', 
+        fill: '#000'
     });
 
     // Redémarrage du jeu au clic
