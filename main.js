@@ -33,7 +33,7 @@ function preload() {
   this.load.image('Matt', 'assets/Matt.png');
   this.load.image('Anaelle', 'assets/Anaelle.png');
   this.load.image('Lea', 'assets/lea.png');
-  this.load.image('Melanie', 'assets/Mel.png');
+  this.load.image('Mel', 'assets/Mel.png');
 }
 
 function create() {
