@@ -22,9 +22,18 @@ let timerText;
 let timeLeft = 30; // Durée de la partie en secondes
 
 function preload() {
-  // Charger les bulles rouges et bleues
-  this.load.image('bubbleBlue', 'assets/bulle_bleue.png');
-  this.load.image('bubbleRed', 'assets/bulle_rouge.png');
+  // Charger les photos
+  this.load.image('Alix', 'assets/Alix.png');
+  this.load.image('Charline', 'assets/Charline.png');
+  this.load.image('Steevens', 'assets/Steevens.png');
+  this.load.image('coco', 'assets/coco.png');
+  this.load.image('Julia', 'assets/Julia.png');
+  this.load.image('Dodo', 'assets/dodo.png');
+  this.load.image('Matt', 'assets/Matt.png');
+  this.load.image('Anaelle', 'assets/Anaelle.png');
+  this.load.image('Lea', 'assets/lea.png');
+  this.load.image('Melanie', 'assets/Melanie.png');
+  
 }
 
 function create() {
@@ -61,28 +70,34 @@ function create() {
     loop: true
   });
 
-  // Génération des bulles
+  // Générer des photos en boucle
   this.time.addEvent({
     delay: 700, // Toutes les 700 ms
     callback: () => {
       const x = Phaser.Math.Between(50, this.scale.width - 50); // Position X aléatoire
       const y = Phaser.Math.Between(50, this.scale.height - 50); // Position Y aléatoire
 
-      // Générer une bulle rouge ou bleue aléatoirement
-      const isBlue = Phaser.Math.Between(0, 1) === 0; // 50% de chance
-      const bubble = this.add.image(x, y, isBlue ? 'bubbleBlue' : 'bubbleRed').setScale(0.2);
+      const photos = ['photo1', 'photo2', 'photo3'];
+      const randomPhoto = Phaser.Utils.Array.GetRandom(photos);
+
+      // Ajouter une photo aléatoire
+      const photo = this.add.image(x, y, randomPhoto).setScale(0.3);
+
+      // Appliquer un filtre aléatoire (bleu ou rouge)
+      const isBlue = Phaser.Math.Between(0, 1) === 0; // 50% de chance d'être bleu ou rouge
+      photo.setTint(isBlue ? 0x0000ff : 0xff0000); // Bleu ou rouge
 
       // Interaction tactile / clic
-      bubble.setInteractive();
-      bubble.on('pointerdown', () => {
-        bubble.destroy();
+      photo.setInteractive();
+      photo.on('pointerdown', () => {
+        photo.destroy();
 
         if (isBlue) {
-          // Bulle bleue : Ajoute des points et du temps
+          // Photo bleue : Ajoute des points et du temps
           score += 10;
           timeLeft += 2;
         } else {
-          // Bulle rouge : Enlève des points et réduit le temps
+          // Photo rouge : Enlève des points et réduit le temps
           score -= 5;
           timeLeft -= 3;
         }
@@ -94,10 +109,10 @@ function create() {
 
       // Animation de disparition
       this.tweens.add({
-        targets: bubble,
+        targets: photo,
         alpha: 0,
-        duration: 3000, // La bulle reste visible 3 secondes
-        onComplete: () => bubble.destroy()
+        duration: 3000, // La photo reste visible 3 secondes
+        onComplete: () => photo.destroy()
       });
     },
     loop: true
@@ -105,5 +120,5 @@ function create() {
 }
 
 function update() {
-  // Pas d'update spécifique pour ce jeu
+  // Pas de mise à jour spécifique pour ce jeu
 }
