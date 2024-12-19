@@ -33,7 +33,7 @@ function preload() {
   this.load.image('Matt', 'assets/Matt.png');
   this.load.image('Anaelle', 'assets/Anaelle.png');
   this.load.image('Lea', 'assets/lea.png');
-  this.load.image('Melanie', 'assets/Melanie.png');
+  this.load.image('Melanie', 'assets/Mel.png');
 }
 
 function create() {
@@ -72,17 +72,7 @@ function startGame() {
       timerText.setText(`Temps: ${timeLeft}s`);
 
       if (timeLeft <= 0) {
-        // Fin de partie
-        this.scene.pause();
-        this.add.text(this.scale.width / 2, this.scale.height / 2 - 50, 'Partie terminée !', {
-          fontSize: '48px',
-          fill: '#ff0000'
-        }).setOrigin(0.5);
-        this.add.text(this.scale.width / 2, this.scale.height / 2, 'Cliquez pour rejouer', {
-          fontSize: '24px',
-          fill: '#000'
-        }).setOrigin(0.5);
-        this.input.once('pointerdown', () => this.scene.restart());
+        endGame.call(this); // Fin du jeu
       }
     },
     loop: true
@@ -140,6 +130,23 @@ function startGame() {
       });
     },
     loop: true
+  });
+}
+
+function endGame() {
+  // Afficher le message de fin de partie
+  this.add.text(this.scale.width / 2, this.scale.height / 2 - 50, 'Partie terminée !', {
+    fontSize: '48px',
+    fill: '#ff0000'
+  }).setOrigin(0.5);
+  this.add.text(this.scale.width / 2, this.scale.height / 2, 'Cliquez pour rejouer', {
+    fontSize: '24px',
+    fill: '#000'
+  }).setOrigin(0.5);
+
+  // Attendre un clic pour redémarrer le jeu
+  this.input.once('pointerdown', () => {
+    this.scene.restart(); // Redémarrer la scène
   });
 }
 
