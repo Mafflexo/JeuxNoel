@@ -1,19 +1,17 @@
-// Configuration Phaser
 const config = {
-    type: Phaser.AUTO,
-    parent: 'game-container',
+  type: Phaser.AUTO,
+  scale: {
+    mode: Phaser.Scale.FIT,
+    autoCenter: Phaser.Scale.CENTER_BOTH,
     width: 800,
-    height: 600,
-    backgroundColor: '#87CEEB',
-    scale: {
-        mode: Phaser.Scale.FIT,
-        autoCenter: Phaser.Scale.CENTER_BOTH
-    },
-    scene: {
-        preload: preload,
-        create: create,
-        update: update
-    }
+    height: 600
+  },
+  backgroundColor: '#87CEEB',
+  scene: {
+    preload: preload,
+    create: create,
+    update: update
+  }
 };
 
 const game = new Phaser.Game(config);
@@ -21,133 +19,91 @@ const game = new Phaser.Game(config);
 let score = 0;
 let scoreText;
 let timerText;
-let timeLeft = 30;
-let bubbleTimer;
-let isGameStarted = false;
-let bubbleSpawnDelay = 1500;
-let difficultyIncreaseInterval = 5;
+let timeLeft = 30; // Durée de la partie en secondes
 
 function preload() {
-    this.load.image('bubble', 'https://cdn-icons-png.flaticon.com/512/102/102344.png');
-    this.load.image('startButton', 'https://cdn-icons-png.flaticon.com/512/0/375.png');
+  // Charger les bulles rouges et bleues
+  this.load.image('bubbleBlue', 'assets/bubble_blue.png');
+  this.load.image('bubbleRed', 'assets/bubble_red.png');
 }
 
 function create() {
-    // Réinitialisation des variables
-    score = 0;
-    timeLeft = 30;
-    isGameStarted = false;
-    bubbleSpawnDelay = 1500;
+  score = 0;
+  timeLeft = 30;
 
-    // Bouton de démarrage
-    const startButton = this.add.image(400, 300, 'startButton')
-        .setScale(0.5)
-        .setInteractive()
-        .on('pointerdown', () => {
-            startButton.destroy();
-            startGame.call(this);
-        });
+  // Texte du score
+  scoreText = this.add.text(10, 10, `Score: ${score}`, { fontSize: '32px', fill: '#000' });
 
-    // Texte du score
-    scoreText = this.add.text(10, 10, `Score: ${score}`, { 
-        fontSize: '32px', 
-        fill: '#000',
-        visible: false
-    });
+  // Texte du timer
+  timerText = this.add.text(10, 50, `Temps: ${timeLeft}s`, { fontSize: '32px', fill: '#000' });
 
-    // Texte du timer
-    timerText = this.add.text(10, 50, `Temps: ${timeLeft}s`, { 
-        fontSize: '32px', 
-        fill: '#000',
-        visible: false
-    });
-}
+  // Timer pour réduire le temps
+  this.time.addEvent({
+    delay: 1000, // Une seconde
+    callback: () => {
+      timeLeft--;
+      timerText.setText(`Temps: ${timeLeft}s`);
 
-function startGame() {
-    // Rendre les textes visibles
-    scoreText.setVisible(true);
-    timerText.setVisible(true);
+      if (timeLeft <= 0) {
+        // Fin de partie
+        this.scene.pause();
+        this.add.text(this.scale.width / 2, this.scale.height / 2 - 50, 'Partie terminée !', {
+          fontSize: '48px',
+          fill: '#ff0000'
+        }).setOrigin(0.5);
+        this.add.text(this.scale.width / 2, this.scale.height / 2, 'Cliquez pour rejouer', {
+          fontSize: '24px',
+          fill: '#000'
+        }).setOrigin(0.5);
+        this.input.once('pointerdown', () => this.scene.restart());
+      }
+    },
+    loop: true
+  });
 
-    // Timer principal
-    this.time.addEvent({
-        delay: 1000,
-        callback: () => {
-            timeLeft--;
-            timerText.setText(`Temps: ${timeLeft}s`);
+  // Génération des bulles
+  this.time.addEvent({
+    delay: 700, // Toutes les 700 ms
+    callback: () => {
+      const x = Phaser.Math.Between(50, this.scale.width - 50); // Position X aléatoire
+      const y = Phaser.Math.Between(50, this.scale.height - 50); // Position Y aléatoire
 
-            // Augmentation de la difficulté
-            if (timeLeft % difficultyIncreaseInterval === 0 && timeLeft > 0) {
-                bubbleSpawnDelay = Math.max(300, bubbleSpawnDelay - 200);
-                if (bubbleTimer) bubbleTimer.remove();
-                createBubbleSpawner.call(this);
-            }
+      // Générer une bulle rouge ou bleue aléatoirement
+      const isBlue = Phaser.Math.Between(0, 1) === 0; // 50% de chance
+      const bubble = this.add.image(x, y, isBlue ? 'bubbleBlue' : 'bubbleRed').setScale(0.2);
 
-            if (timeLeft <= 0) {
-                endGame.call(this);
-            }
-        },
-        loop: true
-    });
+      // Interaction tactile / clic
+      bubble.setInteractive();
+      bubble.on('pointerdown', () => {
+        bubble.destroy();
 
-    // Première création du spawner de bulles
-    createBubbleSpawner.call(this);
-}
+        if (isBlue) {
+          // Bulle bleue : Ajoute des points et du temps
+          score += 10;
+          timeLeft += 2;
+        } else {
+          // Bulle rouge : Enlève des points et réduit le temps
+          score -= 5;
+          timeLeft -= 3;
+        }
 
-function createBubbleSpawner() {
-    bubbleTimer = this.time.addEvent({
-        delay: bubbleSpawnDelay,
-        callback: () => {
-            const x = Phaser.Math.Between(50, 750);
-            const y = Phaser.Math.Between(50, 550);
-            const bubble = this.add.image(x, y, 'bubble').setScale(0.1);
+        // Mise à jour des affichages
+        scoreText.setText(`Score: ${score}`);
+        timerText.setText(`Temps: ${timeLeft}s`);
+      });
 
-            // Animation de disparition
-            this.tweens.add({
-                targets: bubble,
-                alpha: 0,
-                duration: 2000,
-                onComplete: () => bubble.destroy()
-            });
-
-            // Interaction tactile / clic
-            bubble.setInteractive();
-            bubble.on('pointerdown', () => {
-                bubble.destroy();
-                score += 10;
-                scoreText.setText(`Score: ${score}`);
-            });
-        },
-        loop: true
-    });
-}
-
-function endGame() {
-    // Arrêter le timer des bulles
-    if (bubbleTimer) bubbleTimer.remove();
-
-    // Mettre en pause la scène
-    this.scene.pause();
-
-    // Texte de fin
-    this.add.text(250, 250, 'Partie terminée !', { 
-        fontSize: '48px', 
-        fill: '#ff0000'
-    });
-
-    const scoreEndText = this.add.text(250, 350, `Score final : ${score}`, { 
-        fontSize: '32px', 
-        fill: '#000'
-    });
-
-    const replayText = this.add.text(250, 400, 'Cliquez pour rejouer', { 
-        fontSize: '24px', 
-        fill: '#000'
-    });
-
-    // Redémarrage du jeu au clic
-    this.input.once('pointerdown', () => this.scene.restart());
+      // Animation de disparition
+      this.tweens.add({
+        targets: bubble,
+        alpha: 0,
+        duration: 3000, // La bulle reste visible 3 secondes
+        onComplete: () => bubble.destroy()
+      });
+    },
+    loop: true
+  });
 }
 
 function update() {
-    // Pas d'update spécifique pour ce jeu
+  // Pas d'update spécifique pour ce jeu
 }
