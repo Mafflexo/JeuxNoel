@@ -89,7 +89,7 @@ function startGame() {
       const photos = [
         'Alix', 'Charline', 'Steevens', 'coco',
         'Julia', 'Dodo', 'Matt', 'Anaelle',
-        'Lea', 'Melanie'
+        'Lea', 'Mel'
       ];
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
