@@ -23,8 +23,8 @@ let timeLeft = 30; // Durée de la partie en secondes
 
 function preload() {
   // Charger les bulles rouges et bleues
-  this.load.image('bubbleBlue', 'assets/bubble_blue.png');
-  this.load.image('bubbleRed', 'assets/bubble_red.png');
+  this.load.image('bubbleBlue', 'assets/bulle_bleue.png');
+  this.load.image('bubbleRed', 'assets/bulle_rouge.png');
 }
 
 function create() {
