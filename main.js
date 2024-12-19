@@ -22,7 +22,7 @@ let timerText;
 let timeLeft = 30; // Durée de la partie en secondes
 
 function preload() {
-  // Charger les photos
+  // Charger toutes les photos
   this.load.image('Alix', 'assets/Alix.png');
   this.load.image('Charline', 'assets/Charline.png');
   this.load.image('Steevens', 'assets/Steevens.png');
@@ -77,7 +77,11 @@ function create() {
       const y = Phaser.Math.Between(50, this.scale.height - 50); // Position Y aléatoire
 
       // Liste des noms des images chargées
-      const photos = ['Alix', 'Charline', 'Steevens', 'coco', 'Julia', 'Dodo', 'Matt', 'Anaelle', 'Lea', 'Melanie'];
+      const photos = [
+        'Alix', 'Charline', 'Steevens', 'coco',
+        'Julia', 'Dodo', 'Matt', 'Anaelle',
+        'Lea', 'Melanie'
+      ];
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
       // Ajouter une photo aléatoire
