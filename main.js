@@ -33,7 +33,6 @@ function preload() {
   this.load.image('Anaelle', 'assets/Anaelle.png');
   this.load.image('Lea', 'assets/lea.png');
   this.load.image('Melanie', 'assets/Melanie.png');
-  
 }
 
 function create() {
@@ -77,8 +76,9 @@ function create() {
       const x = Phaser.Math.Between(50, this.scale.width - 50); // Position X aléatoire
       const y = Phaser.Math.Between(50, this.scale.height - 50); // Position Y aléatoire
 
-      const photos = ['photo1', 'photo2', 'photo3'];
-      const randomPhoto = Phaser.Utils.Array.GetRandom(photos);
+      // Liste des noms des images chargées
+      const photos = ['Alix', 'Charline', 'Steevens', 'coco', 'Julia', 'Dodo', 'Matt', 'Anaelle', 'Lea', 'Melanie'];
+      const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
       // Ajouter une photo aléatoire
       const photo = this.add.image(x, y, randomPhoto).setScale(0.3);
