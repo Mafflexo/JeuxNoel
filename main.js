@@ -33,7 +33,7 @@ function preload() {
   this.load.image('Matt', 'assets/Matt.png');
   this.load.image('Anaelle', 'assets/Anaelle.png');
   this.load.image('Lea', 'assets/lea.png');
-  this.load.image('Mel', 'assets/Mel.png');
+  this.load.image('Melanie', 'assets/Mel.png');
 }
 
 function create() {
@@ -89,7 +89,7 @@ function startGame() {
       const photos = [
         'Alix', 'Charline', 'Steevens', 'coco',
         'Julia', 'Dodo', 'Matt', 'Anaelle',
-        'Lea', 'Mel'
+        'Lea', 'Melanie'
       ];
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
@@ -97,8 +97,8 @@ function startGame() {
       const randomScale = Phaser.Math.FloatBetween(0.2, 0.6); // Échelle entre 20% et 60%
       const photo = this.add.image(x, y, randomPhoto).setScale(randomScale);
 
-      // Appliquer un filtre aléatoire (bleu ou rouge)
-      const isBlue = Phaser.Math.Between(0, 1) === 0; // 50% de chance d'être bleu ou rouge
+      // Déterminer la couleur avec un biais en faveur du bleu
+      const isBlue = Phaser.Math.Between(0, 9) < 7; // 70% de chance d'être bleu, 30% d'être rouge
       photo.setTint(isBlue ? 0x0000ff : 0xff0000); // Bleu ou rouge
 
       // Interaction tactile / clic
@@ -107,13 +107,13 @@ function startGame() {
         photo.destroy();
 
         if (isBlue) {
-          // Photo bleue : Ajoute des points et du temps
+          // Photo bleue : Ajoute 1 seconde et des points
           score += 10;
-          timeLeft += 2;
+          timeLeft += 1; // Ajoute 1 seconde
         } else {
-          // Photo rouge : Enlève des points et réduit le temps
+          // Photo rouge : Retire 3 secondes et des points
           score -= 5;
-          timeLeft -= 3;
+          timeLeft -= 3; // Retire 3 secondes
         }
 
         // Mise à jour des affichages
