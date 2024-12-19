@@ -20,6 +20,7 @@ let score = 0;
 let scoreText;
 let timerText;
 let timeLeft = 30; // Durée de la partie en secondes
+let gameStarted = false; // Indique si le jeu a démarré
 
 function preload() {
   // Charger toutes les photos
@@ -38,6 +39,24 @@ function preload() {
 function create() {
   score = 0;
   timeLeft = 30;
+
+  // Afficher le bouton "Start"
+  const startButton = this.add.text(this.scale.width / 2, this.scale.height / 2, 'START', {
+    fontSize: '48px',
+    fill: '#fff',
+    backgroundColor: '#000',
+    padding: { x: 20, y: 10 }
+  }).setOrigin(0.5).setInteractive();
+
+  // Lancer le jeu au clic sur le bouton "Start"
+  startButton.on('pointerdown', () => {
+    startButton.destroy(); // Supprimer le bouton "Start"
+    startGame.call(this); // Démarrer le jeu
+  });
+}
+
+function startGame() {
+  gameStarted = true;
 
   // Texte du score
   scoreText = this.add.text(10, 10, `Score: ${score}`, { fontSize: '32px', fill: '#000' });
@@ -69,7 +88,7 @@ function create() {
     loop: true
   });
 
-  // Générer des photos en boucle
+  // Générer des photos en boucle avec variation de taille
   this.time.addEvent({
     delay: 700, // Toutes les 700 ms
     callback: () => {
@@ -84,8 +103,9 @@ function create() {
       ];
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
-      // Ajouter une photo aléatoire
-      const photo = this.add.image(x, y, randomPhoto).setScale(0.3);
+      // Ajouter une photo aléatoire avec une variation de taille
+      const randomScale = Phaser.Math.FloatBetween(0.2, 0.6); // Échelle entre 20% et 60%
+      const photo = this.add.image(x, y, randomPhoto).setScale(randomScale);
 
       // Appliquer un filtre aléatoire (bleu ou rouge)
       const isBlue = Phaser.Math.Between(0, 1) === 0; // 50% de chance d'être bleu ou rouge
@@ -114,7 +134,7 @@ function create() {
       // Animation de disparition
       this.tweens.add({
         targets: photo,
-        alpha: 0,
+        alpha: 0, // Rendre transparent
         duration: 3000, // La photo reste visible 3 secondes
         onComplete: () => photo.destroy()
       });
