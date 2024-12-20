@@ -95,11 +95,11 @@ function startGame() {
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
       // Ajouter une photo aléatoire avec une variation de taille
-      const randomScale = Phaser.Math.FloatBetween(0.2, 0.6); // Échelle entre 20% et 60%
+      const randomScale = Phaser.Math.FloatBetween(0.2, 0.4); // Échelle entre 20% et 60%
       const photo = this.add.image(x, y, randomPhoto).setScale(randomScale);
 
       // Déterminer la couleur avec un biais en faveur du bleu
-      const isBlue = Phaser.Math.Between(0, 9) < 7; // 70% de chance d'être bleu, 30% d'être rouge
+      const isBlue = Phaser.Math.Between(0, 9) < 6; // 70% de chance d'être bleu, 30% d'être rouge
       photo.setTint(isBlue ? 0x0000ff : 0xff0000); // Bleu ou rouge
 
       // Interaction tactile / clic
@@ -114,7 +114,7 @@ function startGame() {
         } else {
           // Photo rouge : Retire 3 secondes et des points
           score -= 5;
-          timeLeft -= 3; // Retire 3 secondes
+          timeLeft -= 5; // Retire 3 secondes
         }
 
         // Mise à jour des affichages
