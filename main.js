@@ -34,6 +34,7 @@ function preload() {
   this.load.image('Anaelle', 'assets/Anaelle.png');
   this.load.image('Lea', 'assets/lea.png');
   this.load.image('Melanie', 'assets/Mel.png');
+  this.load.image('Elena', 'assets/Elena.png');
 }
 
 function create() {
@@ -89,7 +90,7 @@ function startGame() {
       const photos = [
         'Alix', 'Charline', 'Steevens', 'coco',
         'Julia', 'Dodo', 'Matt', 'Anaelle',
-        'Lea', 'Melanie'
+        'Lea', 'Melanie','Elena'
       ];
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
