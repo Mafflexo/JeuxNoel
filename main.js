@@ -21,6 +21,7 @@ let scoreText;
 let timerText;
 let timeLeft = 30; // Durée de la partie en secondes
 let gameStarted = false; // Indique si le jeu a démarré
+let photoEvent; // Stocke l'événement de génération des images
 
 function preload() {
   // Charger toutes les photos
@@ -80,7 +81,7 @@ function startGame() {
   });
 
   // Générer des photos en boucle avec variation de taille
-  this.time.addEvent({
+  photoEvent = this.time.addEvent({
     delay: 700, // Toutes les 700 ms
     callback: () => {
       const x = Phaser.Math.Between(50, this.scale.width - 50); // Position X aléatoire
@@ -95,11 +96,11 @@ function startGame() {
       const randomPhoto = Phaser.Utils.Array.GetRandom(photos); // Choisir une photo aléatoire
 
       // Ajouter une photo aléatoire avec une variation de taille
-      const randomScale = Phaser.Math.FloatBetween(0.2, 0.4); // Échelle entre 20% et 60%
+      const randomScale = Phaser.Math.FloatBetween(0.2, 0.6); // Échelle entre 20% et 60%
       const photo = this.add.image(x, y, randomPhoto).setScale(randomScale);
 
       // Déterminer la couleur avec un biais en faveur du bleu
-      const isBlue = Phaser.Math.Between(0, 9) < 6; // 70% de chance d'être bleu, 30% d'être rouge
+      const isBlue = Phaser.Math.Between(0, 9) < 7; // 70% de chance d'être bleu, 30% d'être rouge
       photo.setTint(isBlue ? 0x0000ff : 0xff0000); // Bleu ou rouge
 
       // Interaction tactile / clic
@@ -114,7 +115,7 @@ function startGame() {
         } else {
           // Photo rouge : Retire 3 secondes et des points
           score -= 5;
-          timeLeft -= 5; // Retire 3 secondes
+          timeLeft -= 3; // Retire 3 secondes
         }
 
         // Mise à jour des affichages
@@ -135,18 +136,25 @@ function startGame() {
 }
 
 function endGame() {
+  // Arrêter la génération des images
+  photoEvent.remove();
+
   // Afficher le message de fin de partie
   this.add.text(this.scale.width / 2, this.scale.height / 2 - 50, 'Partie terminée !', {
     fontSize: '48px',
     fill: '#ff0000'
   }).setOrigin(0.5);
-  this.add.text(this.scale.width / 2, this.scale.height / 2, 'Cliquez pour rejouer', {
-    fontSize: '24px',
-    fill: '#000'
-  }).setOrigin(0.5);
 
-  // Attendre un clic pour redémarrer le jeu
-  this.input.once('pointerdown', () => {
+  // Afficher un bouton "Rejouer"
+  const replayButton = this.add.text(this.scale.width / 2, this.scale.height / 2 + 50, 'REJOUER', {
+    fontSize: '32px',
+    fill: '#fff',
+    backgroundColor: '#000',
+    padding: { x: 20, y: 10 }
+  }).setOrigin(0.5).setInteractive();
+
+  // Redémarrer le jeu au clic sur le bouton "Rejouer"
+  replayButton.on('pointerdown', () => {
     this.scene.restart(); // Redémarrer la scène
   });
 }
